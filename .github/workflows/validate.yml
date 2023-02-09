@@ -1,0 +1,70 @@
+name: Plan Terraform and check policies
+on:
+    pull_request:
+jobs:
+  Runner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Setup OPA
+        uses: open-policy-agent/setup-opa@v2
+
+      - name: Check out policy repository
+        uses: actions/checkout@v3
+        with:
+          repository: sduff/opa_policy_repo
+
+#     fetch the opa_policy_list_action
+#     this should be a github action
+      - name: Check out policy repository
+        uses: actions/checkout@v3
+        with:
+          repository: sduff/opa_policy_list_action
+
+      # Setup done
+      # terraform init
+      # terraform plan
+
+      # opa_policy_list_action
+
+      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌
+            #### Terraform Initialization ⚙️
+            #### Terraform Plan 📖
+            #### Terraform Validation 🤖
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`\n
+            Hello, world
+            \`\`\`
+
+            </details>
+
+            *Pushed by: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+# Ref: https://developer.hashicorp.com/terraform/tutorials/automation/github-actions
