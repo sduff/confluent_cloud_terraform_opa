@@ -1,5 +1,11 @@
 name: Plan Terraform and check policies
-on: [push, pull_request]
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
 jobs:
   Runner:
     runs-on: ubuntu-latest
@@ -62,5 +68,10 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+
+# If this is a merge request with the main branch
+#      - name: Terraform Apply
+#        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+#        run: terraform apply -auto-approve -input=false
 
 # Ref: https://developer.hashicorp.com/terraform/tutorials/automation/github-actions
