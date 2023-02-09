@@ -29,10 +29,8 @@ jobs:
 
 #     fetch the opa_policy_list_action
 #     this should be a github action
-#      - name: Check out policy repository
-#        uses: actions/checkout@v3
-#        with:
-#          repository: sduff/opa_policy_list_action
+      - name: Check out policy repository
+        uses: sduff/opa_policy_list_action
 
       # Setup done
       # terraform init
