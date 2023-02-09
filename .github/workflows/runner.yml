@@ -1,18 +1,30 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+name: Build and test Terraform code
+run-name: Plan Terraform Actions ; Check Policy ; Apply Terraform Changes
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Runner:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Setup OPA
+        uses: open-policy-agent/setup-opa@v2
+
+#     fetch the opa_policy_list_action
+
+      - name: Check out policy repository
+        uses: actions/checkout@v3
+        with:
+          repository: sduff/opa_policy_repo
+
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+
