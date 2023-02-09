@@ -1,6 +1,5 @@
 name: Plan Terraform and check policies
-on:
-    pull_request:
+on: [push, pull_request]
 jobs:
   Runner:
     runs-on: ubuntu-latest
