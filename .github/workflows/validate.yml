@@ -1,14 +1,25 @@
 name: Plan Terraform and check policies
-on: [push, pull_request]
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  pull-requests: write
+
 jobs:
   Runner:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          path: .
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
 
       - name: Setup OPA
         uses: open-policy-agent/setup-opa@v2
@@ -17,18 +28,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: sduff/opa_policy_repo
+          path: .
 
-#     fetch the opa_policy_list_action
-#     this should be a github action
-#      - name: Check out policy repository
-#        uses: actions/checkout@v3
-#        with:
-#          repository: sduff/opa_policy_list_action
-
-      # Setup done
-      # terraform init
-      # terraform plan
-      # opa_policy_list_action
+      - name: Check Policies
+        uses: sduff/opa_policy_list_action@v1
 
       - name: List files in the repository
         run: |
@@ -62,5 +65,10 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+
+# If this is a merge request with the main branch
+#      - name: Terraform Apply
+#        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+#        run: terraform apply -auto-approve -input=false
 
 # Ref: https://developer.hashicorp.com/terraform/tutorials/automation/github-actions
