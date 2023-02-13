@@ -30,6 +30,9 @@ jobs:
           repository: sduff/opa_policy_repo
           path: .
 
+      - name: Check Policies
+        uses: sduff/opa_policy_list_action@v1
+
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
